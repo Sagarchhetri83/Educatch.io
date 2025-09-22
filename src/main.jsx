@@ -10,8 +10,8 @@ createRoot(rootElement).render(
   </React.StrictMode>
 )
 
-// Register service worker if supported
-if ('serviceWorker' in navigator) {
+// Disable service worker in development to avoid caching-related white screens
+if (import.meta && import.meta.env && import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js').catch(() => {})
   })

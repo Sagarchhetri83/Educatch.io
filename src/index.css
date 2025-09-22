@@ -13,6 +13,183 @@ html, body, #root {
   height: 100%;
 }
 
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced scroll animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Animation classes */
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInFromLeft 0.6s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInFromRight 0.6s ease-out;
+}
+
+/* Google Button Style */
+.btn-165 {
+  background: white;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  color: #3c4043;
+  cursor: pointer;
+  font-family: 'Google Sans', Roboto, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 40px;
+  letter-spacing: 0.25px;
+  line-height: 20px;
+  padding: 0 12px;
+  text-align: center;
+  transition: background-color 0.218s, border-color 0.218s, box-shadow 0.218s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: auto;
+}
+
+.btn-165:hover {
+  box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+  background-color: #f8f9fa;
+  border-color: #dadce0;
+}
+
+.btn-165:focus {
+  box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3), 0 4px 8px 3px rgba(60, 64, 67, 0.15);
+  outline: none;
+  border-color: #4285f4;
+}
+
+.btn-165:active {
+  background-color: #f1f3f4;
+  border-color: #dadce0;
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+}
+
+.btn-165:disabled {
+  background-color: #f1f3f4;
+  border-color: #dadce0;
+  color: #5f6368;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Square card layout improvements */
+.aspect-square {
+  aspect-ratio: 1 / 1;
+  min-height: 280px;
+}
+
+/* Feature card hover effects */
+.feature-card {
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Responsive adjustments for square cards */
+@media (max-width: 768px) {
+  .aspect-square {
+    min-height: 250px;
+  }
+}
+
+@media (max-width: 640px) {
+  .aspect-square {
+    min-height: 220px;
+  }
+}
+
+/* Hero image fixes to prevent cropping */
+.hero-image-container {
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.hero-image {
+  object-fit: contain;
+  object-position: center;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: none;
+  display: block;
+}
+
+/* Ensure image displays properly at all zoom levels */
+@media (min-width: 768px) {
+  .hero-image-container {
+    max-width: 28rem; /* max-w-md equivalent */
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-image-container {
+    max-width: 32rem; /* max-w-lg equivalent */
+  }
+}
+
+/* Fix for 100% zoom display issues */
+@media screen and (min-resolution: 1dppx) {
+  .hero-image {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
+    object-fit: contain !important;
+  }
+  
+  .hero-image-container {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
 body {
   font-family: 'Poppins', 'Nunito', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }

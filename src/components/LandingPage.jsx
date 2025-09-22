@@ -541,13 +541,18 @@ function Footer() {
             <div>
               <h5 className="font-bold text-lg mb-4 text-white">Quick Links</h5>
               <ul className="space-y-3">
-                {['HOME', 'CLIENT WORK', 'OUR PRODUCTS', 'ABOUT'].map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-gray-300 hover:text-white transition-colors text-sm">
-                      {link}
-                    </a>
-                  </li>
-                ))}
+                <li>
+                  <a href="#home" className="text-gray-300 hover:text-white transition-colors text-sm">Home</a>
+                </li>
+                <li>
+                  <a href="#about" className="text-gray-300 hover:text-white transition-colors text-sm">About Us</a>
+                </li>
+                <li>
+                  <a href="#features" className="text-gray-300 hover:text-white transition-colors text-sm">Key Features</a>
+                </li>
+                <li>
+                  <a href="#faq" className="text-gray-300 hover:text-white transition-colors text-sm">FAQ</a>
+                </li>
               </ul>
             </div>
 
@@ -602,11 +607,7 @@ function FAQ() {
     { q: 'What is EduCatch?', a: 'EduCatch is a motion and voice-powered learning app for kids aged 4–10. Children jump, wave, and speak to catch letters, numbers, and objects in fun, interactive games.' },
     { q: 'What ages is EduCatch for?', a: 'EduCatch is designed for children 4 to 10 years old, where active learning and foundational skills are most important.' },
     { q: 'What subjects does EduCatch cover?', a: 'EduCatch covers English, Hindi, Maths, Science, and Social Science through playful modules.' },
-    { q: 'How does EduCatch work?', a: 'The camera detects hand and body movements while kids catch floating letters and objects. They then say them aloud for instant feedback.' },
-    { q: 'Do I need special hardware?', a: 'No. EduCatch works on any smartphone, tablet, or webcam — no extra devices or sensors required.' },
-    { q: 'Is EduCatch free?', a: 'Yes, the hackathon demo is free to try. Future versions may include premium features, but the goal is to keep it affordable and accessible.' },
-    { q: 'Can teachers use EduCatch in classrooms?', a: 'Yes. EduCatch can be projected on a smartboard or used on tablets in classrooms for interactive group learning.' },
-    { q: 'Which devices are compatible?', a: 'EduCatch works on web browsers (PWA) and as a native mobile app (Flutter) for Android and iOS.' }
+    { q: 'How does EduCatch work?', a: 'The camera detects hand and body movements while kids catch floating letters and objects. They then say them aloud for instant feedback.' }
   ]
 
   const [openIdx, setOpenIdx] = React.useState(-1)

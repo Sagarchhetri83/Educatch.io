@@ -8,6 +8,8 @@ export function Login() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [childName, setChildName] = useState('')
+  const [schoolName, setSchoolName] = useState('')
+  const [stateName, setStateName] = useState('')
   const navigate = useNavigate()
   const location = useLocation()
   const { currentUser } = useAuth()
@@ -32,11 +34,13 @@ export function Login() {
   // No redirect result handling needed for popup method
 
   // Function to save user details (simplified for now)
-  const saveUserDetails = async (user, childName) => {
+  const saveUserDetails = async (user, childName, schoolName, stateName) => {
     try {
       console.log("User data would be saved:", {
         parentEmail: user.email,
         childName: childName,
+        schoolName: schoolName,
+        state: stateName,
         displayName: user.displayName,
         createdAt: new Date().toISOString()
       })
@@ -54,9 +58,17 @@ export function Login() {
       
       console.log('Starting Google sign-in process...')
       
-      // Validate child name
+      // Validate required fields
       if (!childName.trim()) {
         setError('Please enter your child\'s name')
+        return
+      }
+      if (!schoolName.trim()) {
+        setError('Please enter the school name')
+        return
+      }
+      if (!stateName) {
+        setError('Please select your state')
         return
       }
       
@@ -73,12 +85,14 @@ export function Login() {
       
       // Save user details
       console.log('Saving user details...')
-      const saveSuccess = await saveUserDetails(result.user, childName.trim())
+      const saveSuccess = await saveUserDetails(result.user, childName.trim(), schoolName.trim(), stateName)
       
       if (saveSuccess) {
         console.log('User details saved successfully')
         // Store child name in localStorage for dashboard
         localStorage.setItem('childName', childName.trim())
+        localStorage.setItem('schoolName', schoolName.trim())
+        localStorage.setItem('stateName', stateName)
         
         console.log('Redirecting to dashboard...')
         console.log('Target route:', from)
@@ -144,6 +158,43 @@ export function Login() {
               className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
               required
             />
+          </div>
+
+          {/* School Name Input */}
+          <div>
+            <label htmlFor="schoolName" className="block text-sm font-medium text-gray-700 mb-2">
+              School Name
+            </label>
+            <input
+              id="schoolName"
+              type="text"
+              value={schoolName}
+              onChange={(e) => setSchoolName(e.target.value)}
+              placeholder="Enter your child's school"
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+              required
+            />
+          </div>
+
+          {/* State Select (India) */}
+          <div>
+            <label htmlFor="stateName" className="block text-sm font-medium text-gray-700 mb-2">
+              State (India)
+            </label>
+            <select
+              id="stateName"
+              value={stateName}
+              onChange={(e) => setStateName(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+              required
+            >
+              <option value="">Select your state</option>
+              {[
+                'Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat','Haryana','Himachal Pradesh','Jharkhand','Karnataka','Kerala','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal','Andaman and Nicobar Islands','Chandigarh','Dadra and Nagar Haveli and Daman and Diu','Delhi','Jammu and Kashmir','Ladakh','Lakshadweep','Puducherry'
+              ].map((st) => (
+                <option key={st} value={st}>{st}</option>
+              ))}
+            </select>
           </div>
           
           <button

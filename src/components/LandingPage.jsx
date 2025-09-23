@@ -136,6 +136,9 @@ function Hero() {
       <div className="absolute top-0 -right-16 w-72 h-72 bg-rose-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"/>
       <div className="relative flex flex-col md:flex-row items-center gap-12">
         <div className="md:w-1/2 text-center md:text-left">
+          <span className="inline-block mb-4 px-4 py-1 rounded-full bg-black text-white font-bold tracking-wide">
+            Coming soon...
+          </span>
           <h1 className="text-5xl md:text-7xl font-extrabold leading-tight"><span className="bg-gradient-to-r from-rose-400 to-pink-500 bg-clip-text text-transparent">Education</span> Reimagined.</h1>
           <p className="mt-6 text-lg text-slate-600">Watch your kids fall in love with math & English through our scientifically designed curriculum.</p>
           <div className="mt-8 flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
@@ -156,6 +159,7 @@ function Hero() {
               Sign In
             </button>
           </div>
+          
         </div>
         <div className="md:w-1/2 mt-8 md:mt-0 flex justify-center items-center">
           <div className="hero-image-container w-full max-w-md h-auto min-h-80">
@@ -556,32 +560,16 @@ function Footer() {
               </ul>
             </div>
 
-            {/* Social Media */}
+            {/* Contact */}
             <div>
-              <h5 className="font-bold text-lg mb-4 text-white">Connect</h5>
+              <h5 className="font-bold text-lg mb-4 text-white">Contact Us</h5>
               <ul className="space-y-3">
                 <li>
-                  <a href="#" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors text-sm">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001.012.001z"/>
+                  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=educatch.io@gmail.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors text-sm">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M2 4h20v16H2V4zm2 2v.01L12 13l8-6.99V6H4zm16 12V8.24l-7.4 5.16a2 2 0 01-2.2 0L4 8.24V18h16z"/>
                     </svg>
-                    Instagram
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors text-sm">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                    </svg>
-                    Twitter
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors text-sm">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.568 8.16c-.169 1.858-.896 3.46-2.07 4.667-1.177 1.208-2.826 1.876-4.498 1.876-1.672 0-3.321-.668-4.498-1.876-1.174-1.207-1.901-2.809-2.07-4.667-.034-.375-.034-.75 0-1.125.169-1.858.896-3.46 2.07-4.667C8.679 1.16 10.328.492 12 .492s3.321.668 4.498 1.876c1.174 1.207 1.901 2.809 2.07 4.667.034.375.034.75 0 1.125z"/>
-                    </svg>
-                    Globe
+                    educatch.io@gmail.com
                   </a>
                 </li>
               </ul>

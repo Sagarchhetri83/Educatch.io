@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EduCatch Game Module</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>EduCatch Game Module</h1>
+
+      <div id="container">
+        <!-- Video feed from the user's webcam -->
+        <video id="webcam" autoplay playsinline></video>
+
+        <!-- Canvas for MediaPipe drawing (hand connectors and landmarks) -->
+        <canvas id="output_canvas" width="640" height="480"></canvas>
+
+        <!-- Custom on-screen cursor that follows the user's index fingertip -->
+        <div id="cursor" aria-hidden="true"></div>
+
+        <!-- UI Overlay -->
+        <div id="ui-container">
+          <div id="score-display">Score: 0</div>
+          <div id="level-display">Level: 1</div>
+          <button id="startButton" type="button">Start Game</button>
+        </div>
+
+        <!-- Loading indicator while model initializes -->
+        <div id="loading" role="status" aria-live="polite">Loading...</div>
+
+        <!-- Game Over overlay -->
+        <div id="game-over-screen" aria-hidden="true">
+          <div class="game-over-content">
+            <h2>Game Over!</h2>
+            <p id="final-score">Score: 0</p>
+            <button id="return-button" type="button">Return to Dashboard</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- MediaPipe Tasks Vision (Hands Landmarker, Drawing utils) -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm/vision_wasm_internal.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14"></script>
+
+    <!-- App logic -->
+    <script type="module" src="./script.js"></script>
+  </body>
+  </html>
+
+

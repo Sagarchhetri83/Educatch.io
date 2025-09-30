@@ -58,22 +58,7 @@ export function Login() {
       
       console.log('Starting Google sign-in process...')
       
-      // Validate required fields
-      if (!childName.trim()) {
-        setError('Please enter your child\'s name')
-        return
-      }
-      if (!schoolName.trim()) {
-        setError('Please enter the school name')
-        return
-      }
-      if (!stateName) {
-        setError('Please select your state')
-        return
-      }
-      
-      console.log('Child name validated:', childName.trim())
-      
+      // Directly trigger Google sign-in; extra details are optional
       const provider = new GoogleAuthProvider()
       console.log('Google provider created')
       
@@ -83,27 +68,25 @@ export function Login() {
       const result = await signInWithPopup(auth, provider)
       console.log('Google sign-in successful:', result.user)
       
-      // Save user details
-      console.log('Saving user details...')
-      const saveSuccess = await saveUserDetails(result.user, childName.trim(), schoolName.trim(), stateName)
-      
-      if (saveSuccess) {
-        console.log('User details saved successfully')
-        // Store child name in localStorage for dashboard
-        localStorage.setItem('childName', childName.trim())
-        localStorage.setItem('schoolName', schoolName.trim())
-        localStorage.setItem('stateName', stateName)
-        
-        console.log('Redirecting to dashboard...')
-        console.log('Target route:', from)
-        // Wait a moment for auth state to update, then redirect
-        setTimeout(() => {
-          console.log('Executing navigation to:', from)
-          navigate(from, { replace: true })
-        }, 1000)
-      } else {
-        setError('Failed to save user data. Please try again.')
+      // Save optional details if provided; otherwise skip silently
+      try {
+        if (childName.trim() || schoolName.trim() || stateName) {
+          console.log('Saving optional user details...')
+          await saveUserDetails(result.user, childName.trim(), schoolName.trim(), stateName)
+          if (childName.trim()) { localStorage.setItem('childName', childName.trim()) }
+          if (schoolName.trim()) { localStorage.setItem('schoolName', schoolName.trim()) }
+          if (stateName) { localStorage.setItem('stateName', stateName) }
+        }
+      } catch (e) {
+        console.warn('Optional user detail save failed, continuing:', e)
       }
+
+      console.log('Redirecting to dashboard...')
+      console.log('Target route:', from)
+      setTimeout(() => {
+        console.log('Executing navigation to:', from)
+        navigate(from, { replace: true })
+      }, 500)
     } catch (error) {
       console.error('Google sign-in error:', error)
       console.error('Error code:', error.code)
@@ -199,7 +182,7 @@ export function Login() {
           
           <button
             onClick={handleGoogleSignIn}
-            disabled={loading || !childName.trim()}
+            disabled={loading}
             className="btn-165 group relative w-full flex justify-center items-center py-3 px-4 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-md"
           >
             {loading ? (

@@ -1,3 +1,4 @@
+// cspell:ignore mult
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
@@ -37,7 +38,10 @@ function Header() {
   return (
     <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
       <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#" className="text-3xl font-bold text-rose-500">Educatch</a>
+        <div className="flex items-center gap-3">
+          <a href="#" className="text-3xl font-bold text-rose-500">Educatch</a>
+          <span className="hidden sm:inline-block px-3 py-1 text-xs font-semibold bg-black text-white rounded-full shadow-md">Coming soon</span>
+        </div>
         <div className="hidden md:flex space-x-8 items-center">
           <button 
             onClick={() => scrollToSection('home')} 
@@ -58,16 +62,28 @@ function Header() {
             Key Features
           </button>
           <button 
+            onClick={() => scrollToSection('watch')} 
+            className="text-slate-600 hover:text-rose-500 transition-colors duration-300 hover:scale-105"
+          >
+            Watch Demo
+          </button>
+          <button 
             onClick={() => scrollToSection('faq')} 
             className="text-slate-600 hover:text-rose-500 transition-colors duration-300 hover:scale-105"
           >
             FAQ
           </button>
           <button 
-            onClick={() => scrollToSection('watch')} 
+            onClick={() => { if (currentUser) { navigate('/dashboard') } else { navigate('/login') } }}
             className="bg-rose-500 text-white px-6 py-2 rounded-full hover:bg-rose-600 transition-all duration-300 hover:scale-105 shadow-md font-semibold"
           >
-            Watch Demo
+            Sign In
+          </button>
+          <button 
+            onClick={() => navigate('/login')} 
+            className="bg-rose-500 text-white px-6 py-2 rounded-full hover:bg-rose-600 transition-all duration-300 hover:scale-105 shadow-md font-semibold"
+          >
+            Sign Up
           </button>
         </div>
         <button onClick={() => setOpen(!open)} className="md:hidden text-slate-700" aria-label="Toggle menu">
@@ -97,16 +113,28 @@ function Header() {
             Key Features
           </button>
           <button 
+            onClick={() => scrollToSection('watch')} 
+            className="block text-slate-600 hover:text-rose-500 text-left transition-colors duration-300"
+          >
+            Watch Demo
+          </button>
+          <button 
             onClick={() => scrollToSection('faq')} 
             className="block text-slate-600 hover:text-rose-500 text-left transition-colors duration-300"
           >
             FAQ
           </button>
           <button 
-            onClick={() => scrollToSection('watch')} 
+            onClick={() => { if (currentUser) { navigate('/dashboard') } else { navigate('/login') } }} 
             className="inline-block bg-rose-500 text-white px-6 py-2 rounded-full hover:bg-rose-600 shadow-md transition-all duration-300 hover:scale-105 font-semibold"
           >
-            Watch Demo
+            Sign In
+          </button>
+          <button 
+            onClick={() => navigate('/login')} 
+            className="inline-block bg-rose-500 text-white px-6 py-2 rounded-full hover:bg-rose-600 shadow-md transition-all duration-300 hover:scale-105 font-semibold"
+          >
+            Sign Up
           </button>
         </div>
       )}
@@ -115,55 +143,299 @@ function Header() {
 }
 
 function Hero() {
+  const containerRef = useRef(null)
   const navigate = useNavigate()
   const { currentUser } = useAuth()
+  const bgRef = useRef(null)
 
-  const handleGetStarted = () => {
-    if (currentUser) {
-      navigate('/dashboard')
-    } else {
-      navigate('/login')
+  // Foreground wobble text + click burst (already present)
+  useEffect(() => {
+    if (!window.p5 || !containerRef.current) { return }
+
+    const sketch = (p) => {
+      class Particle {
+        constructor(x, y) {
+          this.pos = p.createVector(x, y)
+          this.vel = window.p5.Vector.random2D().mult(p.random(2, 6))
+          this.lifespan = 255
+        }
+        isFinished() { return this.lifespan < 0 }
+        update() {
+          this.pos.add(this.vel)
+          this.vel.mult(0.96)
+          this.lifespan -= 3
+        }
+      }
+
+      class CircleParticle extends Particle {
+        constructor(x, y) {
+          super(x, y)
+          this.size = p.random(5, 12)
+        }
+        show() {
+          p.noFill()
+          p.strokeWeight(2)
+          p.stroke(0, this.lifespan)
+          p.ellipse(this.pos.x, this.pos.y, this.size)
+        }
+      }
+
+      class LineParticle extends Particle {
+        show() {
+          p.strokeWeight(2)
+          p.stroke(0, this.lifespan)
+          p.line(this.pos.x, this.pos.y, this.pos.x - this.vel.x * 10, this.pos.y - this.vel.y * 10)
+        }
+      }
+
+      class WobblyText {
+        constructor(str, x, y) {
+          this.str = str
+          this.target = p.createVector(x, y)
+          this.pos = p.createVector(x, y)
+          this.vel = p.createVector(0, 0)
+          this.acc = p.createVector(0, 0)
+          this.repelRadius = 200
+          this.repelStrength = 8
+          this.springStiffness = 0.04
+          this.damping = 0.8
+        }
+        applyForce(force) { this.acc.add(force) }
+        update() {
+          const mouseVec = p.createVector(p.mouseX, p.mouseY)
+          const repelVec = window.p5.Vector.sub(this.pos, mouseVec)
+          const distance = repelVec.mag()
+          if (distance < this.repelRadius) {
+            const repelForce = repelVec.copy()
+            const strength = p.map(distance, 0, this.repelRadius, this.repelStrength, 0)
+            repelForce.setMag(strength)
+            this.applyForce(repelForce)
+          }
+          const springVec = window.p5.Vector.sub(this.target, this.pos)
+          const springForce = springVec.mult(this.springStiffness)
+          this.applyForce(springForce)
+          this.vel.add(this.acc)
+          this.vel.mult(this.damping)
+          this.pos.add(this.vel)
+          this.acc.mult(0)
+        }
+        show() {
+          p.strokeWeight(4)
+          p.stroke(0)
+          p.noFill()
+          p.text(this.str, this.pos.x, this.pos.y)
+        }
+      }
+
+      let particles = []
+      let wobblyTexts = []
+
+      const getSize = () => {
+        const el = containerRef.current
+        const w = el ? el.clientWidth : p.windowWidth / 2
+        const h = el ? el.clientHeight : Math.max(480, p.windowHeight * 0.8)
+        return { w, h }
+      }
+
+      p.setup = () => {
+        const { w, h } = getSize()
+        const cnv = p.createCanvas(w, h)
+        cnv.parent(containerRef.current)
+        // Blend with surrounding background
+        if (cnv.addClass) { cnv.addClass('mix-blend-multiply') }
+        else { cnv.elt && (cnv.elt.style.mixBlendMode = 'multiply') }
+        p.frameRate(48)
+        p.textFont('Oswald')
+        const base = Math.min(w, h)
+        const tSize = Math.max(36, Math.min(96, base * 0.12))
+        p.textSize(tSize)
+        p.textAlign(p.CENTER, p.CENTER)
+        p.strokeJoin(p.ROUND)
+        const cx = w / 2
+        const cy = h / 2
+        wobblyTexts.push(new WobblyText('MOVE', cx, cy - 85))
+        wobblyTexts.push(new WobblyText('CATCH', cx, cy))
+        wobblyTexts.push(new WobblyText('DO IT AGAIN', cx, cy + 85))
+      }
+
+      p.draw = () => {
+        // Transparent background so the canvas blends with the page
+        p.clear()
+        for (const wt of wobblyTexts) { wt.update(); wt.show() }
+        for (let i = particles.length - 1; i >= 0; i--) {
+          particles[i].update()
+          particles[i].show()
+          if (particles[i].isFinished()) { particles.splice(i, 1) }
+        }
+      }
+
+      p.mousePressed = () => {
+        for (let i = 0; i < 60; i++) {
+          if (p.random(1) > 0.4) {
+            particles.push(new LineParticle(p.mouseX, p.mouseY))
+          } else {
+            particles.push(new CircleParticle(p.mouseX, p.mouseY))
+          }
+        }
+      }
+
+      p.windowResized = () => {
+        const { w, h } = getSize()
+        p.resizeCanvas(w, h)
+        const base = Math.min(w, h)
+        const tSize = Math.max(32, Math.min(96, base * 0.12))
+        p.textSize(tSize)
+        const cx = w / 2
+        const cy = h / 2
+        wobblyTexts = []
+        wobblyTexts.push(new WobblyText('MOVE', cx, cy - 85))
+        wobblyTexts.push(new WobblyText('CATCH', cx, cy))
+        wobblyTexts.push(new WobblyText('DO IT AGAIN', cx, cy + 85))
+      }
     }
-  }
 
-  const handleSignUp = () => {
-    navigate('/login')
-  }
+    const instance = new window.p5(sketch)
+    // Also handle container size changes (e.g., responsive column switch)
+    const el = containerRef.current
+    let ro
+    if ('ResizeObserver' in window && el) {
+      ro = new ResizeObserver(() => { instance && instance.windowResized() })
+      ro.observe(el)
+    }
+    return () => { ro && ro.disconnect(); instance.remove() }
+  }, [])
+
+  // Background particle network inside the same box
+  useEffect(() => {
+    if (!window.p5 || !bgRef.current) { return }
+
+    const sketch = (p) => {
+      class NetworkParticle {
+        constructor(x, y) {
+          this.pos = p.createVector(x, y)
+          this.vel = window.p5.Vector.random2D().mult(0.05)
+          this.acc = p.createVector(0, 0)
+          this.size = p.random(1.5, 3.5)
+          this.maxSpeed = 1.2
+          this.maxForce = 0.2
+        }
+        applyForce(force) { this.acc.add(force) }
+        repel(target) {
+          const force = window.p5.Vector.sub(this.pos, target)
+          const distance = force.mag()
+          const repelRadius = 200
+          if (distance < repelRadius) {
+            const strength = p.map(distance, 0, repelRadius, 1, 0)
+            force.setMag(this.maxSpeed * strength)
+            force.limit(this.maxForce)
+            this.applyForce(force)
+          }
+        }
+        edges() {
+          if (this.pos.x > p.width) {
+            this.pos.x = 0
+          }
+          if (this.pos.x < 0) {
+            this.pos.x = p.width
+          }
+          if (this.pos.y > p.height) {
+            this.pos.y = 0
+          }
+          if (this.pos.y < 0) {
+            this.pos.y = p.height
+          }
+        }
+        update() {
+          this.vel.add(this.acc)
+          this.vel.limit(this.maxSpeed)
+          this.pos.add(this.vel)
+          this.acc.mult(0)
+        }
+        draw() {
+          p.noStroke()
+          p.fill(0, 200)
+          p.ellipse(this.pos.x, this.pos.y, this.size)
+        }
+      }
+
+      let particles = []
+
+      const size = () => {
+        const el = bgRef.current
+        return { w: el ? el.clientWidth : p.windowWidth, h: el ? el.clientHeight : p.windowHeight }
+      }
+
+      const build = (w, h) => {
+        particles = []
+        const count = Math.floor((w * h) / 15000)
+        for (let i = 0; i < count; i++) { particles.push(new NetworkParticle(p.random(w), p.random(h))) }
+      }
+
+      p.setup = () => {
+        const { w, h } = size()
+        const cnv = p.createCanvas(w, h)
+        cnv.parent(bgRef.current)
+        if (cnv.style) { cnv.style('position', 'absolute'); cnv.style('inset', '0'); cnv.style('pointer-events', 'none') }
+        p.frameRate(48)
+        build(w, h)
+      }
+
+      p.draw = () => {
+        p.clear()
+        const mouse = p.createVector(p.mouseX, p.mouseY)
+        for (let i = 0; i < particles.length; i++) {
+          particles[i].repel(mouse)
+          particles[i].update()
+          particles[i].edges()
+          particles[i].draw()
+        }
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i; j < particles.length; j++) {
+            const a = particles[i], b = particles[j]
+            const d = p.dist(a.pos.x, a.pos.y, b.pos.x, b.pos.y)
+            const limit = 150
+            if (d < limit) {
+              const alpha = p.map(d, 0, limit, 0.5, 0)
+              p.stroke(0, alpha * 255)
+              p.strokeWeight(1.2)
+              p.line(a.pos.x, a.pos.y, b.pos.x, b.pos.y)
+            }
+          }
+        }
+      }
+
+      p.windowResized = () => {
+        const { w, h } = size()
+        p.resizeCanvas(w, h)
+        build(w, h)
+      }
+    }
+
+    const instance = new window.p5(sketch)
+    const el = bgRef.current
+    let ro
+    if ('ResizeObserver' in window && el) {
+      ro = new ResizeObserver(() => { instance && instance.windowResized() })
+      ro.observe(el)
+    }
+    return () => { ro && ro.disconnect(); instance.remove() }
+  }, [])
 
   return (
-    <section id="home" className="relative container mx-auto px-6 py-20 md:py-32 overflow-hidden animate-fade-in-up">
-      <div className="absolute top-0 -left-16 w-72 h-72 bg-yellow-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"/>
-      <div className="absolute top-0 -right-16 w-72 h-72 bg-rose-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"/>
-      <div className="relative flex flex-col md:flex-row items-center gap-12">
-        <div className="md:w-1/2 text-center md:text-left">
-          <span className="inline-block mb-4 px-4 py-1 rounded-full bg-black text-white font-bold tracking-wide">
-            Coming soon...
-          </span>
-          <h1 className="text-5xl md:text-7xl font-extrabold leading-tight"><span className="bg-gradient-to-r from-rose-400 to-pink-500 bg-clip-text text-transparent">Education</span> Reimagined.</h1>
-          <p className="mt-6 text-lg text-slate-600">Watch your kids fall in love with math & English through our scientifically designed curriculum.</p>
-          <div className="mt-8 flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
-            <span className="text-lg font-semibold text-rose-600">Are You Excited !!</span>
-            <button onClick={handleSignUp} className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-rose-500 text-white font-semibold hover:bg-rose-600 shadow-md transition-all duration-200">
-              Sign Up
-            </button>
-            <button
-              onClick={() => {
-                if (currentUser) {
-                  navigate('/dashboard')
-                } else {
-                  navigate('/login')
-                }
-              }}
-              className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-rose-500 text-white font-semibold hover:bg-rose-600 shadow-md transition-all duration-200"
-            >
-              Sign In
-            </button>
+    <section id="home" className="relative container mx-auto px-6 py-12 md:py-20 overflow-hidden">
+      {/* soft background blobs */}
+      <div className="pointer-events-none absolute -left-24 -top-10 w-80 h-80 bg-yellow-100 rounded-full mix-blend-multiply blur-3xl opacity-70" />
+      <div className="pointer-events-none absolute -right-28 bottom-0 w-96 h-96 bg-rose-100 rounded-full mix-blend-multiply blur-3xl opacity-70" />
+      <div className="relative flex flex-col md:flex-row items-center gap-10">
+        <div className="md:w-1/2 w-full">
+          <div className="relative w-full h-[55vh] md:h-[70vh] min-h-[360px] rounded-2xl shadow overflow-hidden">
+            <div ref={bgRef} className="absolute inset-0" aria-hidden="true" />
+            <div ref={containerRef} className="absolute inset-0 cursor-pointer" />
           </div>
-          
         </div>
-        <div className="md:w-1/2 mt-8 md:mt-0 flex justify-center items-center">
-          <div className="hero-image-container w-full max-w-md h-auto min-h-80">
-            <img src="/images/hero-child.png" alt="Happy child using a tablet" className="hero-image rounded-lg shadow-2xl w-full h-auto" />
+        <div className="md:w-1/2 w-full mt-8 md:mt-0 flex justify-center items-center">
+          <div className="w-full max-w-md h-auto min-h-80">
+            <img src="/images/hero-child.png" alt="Happy child using a tablet" className="rounded-lg shadow-2xl w-full h-auto" />
           </div>
         </div>
       </div>
@@ -648,3 +920,5 @@ export default function LandingPage() {
     </main>
   )
 }
+
+
